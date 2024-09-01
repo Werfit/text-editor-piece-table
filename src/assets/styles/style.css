@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body,
+  html {
+    @apply text-gray-light font-mono;
+    background: radial-gradient(
+        46.27% 39.92% at 50% 60.08%,
+        #e0e0e0 0%,
+        #f5f5f5 100%
+      )
+      #f5f5f5;
+  }
+}
