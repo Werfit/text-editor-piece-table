@@ -10,5 +10,7 @@ if (!application) {
 
 const editor = new Editor(application, {
   class:
-    "rounded-t-lg overflow-hidden shadow-xl shadow-gray-extra-light/25 w-[800px] h-[596px] mx-auto",
+    "rounded-t-lg overflow-hidden shadow-xl shadow-gray-extra-light/25 max-w-full w-[800px] h-[596px] mx-auto",
+  paddingX: 30,
+  paddingY: 20,
 });

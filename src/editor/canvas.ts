@@ -1,3 +1,5 @@
+import { Font } from "./font";
+
 export class Canvas {
   private ratio: number = window.devicePixelRatio ?? 1;
 
@@ -18,13 +20,27 @@ export class Canvas {
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
-    context!.scale(this.ratio, this.ratio);
+    context.scale(this.ratio, this.ratio);
 
     this.canvas = canvas;
     this.context = context!;
 
     root.appendChild(canvas);
-    context.fillStyle = "white";
-    context.fillRect(0, 0, width, height);
+    this.clearAll();
+  }
+
+  setFont(font: Font) {
+    this.context.font = font.getFont();
+  }
+
+  printLine(line: string, x: number, y: number) {
+    this.context.fillText(line, x, y);
+  }
+
+  clearAll() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillStyle = "white";
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillStyle = "black";
   }
 }
