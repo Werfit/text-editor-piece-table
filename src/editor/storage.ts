@@ -28,7 +28,7 @@ export class Storage {
   original: string = "";
   add: string = "";
 
-  pieceHead: Piece = new Piece(0, 0, Source.ORIGINAL, null);
+  pieceHead: Piece | null = new Piece(0, 0, Source.ORIGINAL, null);
 
   constructor(content: string = "") {
     this.original = content;
@@ -50,7 +50,7 @@ export class Storage {
   }
 
   insert(content: string, at: Position) {
-    const { piece, offset } = this.findPieceByLine(at);
+    const { piece, offset, previous } = this.findPieceByLine(at);
 
     if (!piece) {
       return;
@@ -69,13 +69,93 @@ export class Storage {
       nextPiece
     );
     this.add += content;
-    piece.next = currentPiece;
     piece.length = offset;
+
+    if (previous && piece.length === 0) {
+      previous.next = currentPiece;
+    } else if (piece.length === 0) {
+      this.pieceHead = currentPiece;
+    } else {
+      piece.next = currentPiece;
+    }
   }
 
-  private findPieceByLine(position: Position) {
+  delete(at: Position) {
+    const { piece, offset, previous } = this.findPieceByLine(at);
+
+    if (!piece) {
+      return;
+    }
+
+    if (offset === 0 && previous) {
+      this.removeLastCharacterOfPiece(previous);
+      return;
+    } else if (offset === 0) {
+      return;
+    }
+
+    if (piece.length === 1 && offset === 1) {
+      this.removePiece(piece);
+      return;
+    }
+
+    if (offset === 1 && piece.length > 0) {
+      piece.length--;
+      piece.offset++;
+      return;
+    }
+
+    if (offset === piece.length - 1) {
+      piece.length--;
+      return;
+    }
+
+    const newPiece = new Piece(
+      piece.offset + offset,
+      piece.length - offset,
+      piece.source,
+      piece.next
+    );
+
+    piece.next = newPiece;
+    piece.length = offset - 1;
+  }
+
+  private removeLastCharacterOfPiece(piece: Piece) {
+    piece.length--;
+
+    if (piece.length === 0) {
+      this.removePiece(piece);
+    }
+  }
+
+  private removePiece(piece: Piece) {
+    let head = this.pieceHead;
+    let previous = null;
+
+    while (head !== null) {
+      if (head === piece) {
+        if (previous) {
+          previous.next = head.next;
+        } else {
+          this.pieceHead = head.next;
+        }
+        return;
+      }
+
+      previous = head;
+      head = head.next;
+    }
+  }
+
+  private findPieceByLine(position: Position): {
+    offset: number;
+    piece: Piece | null;
+    previous: Piece | null;
+  } {
     const { line, character } = position;
     let head: Piece | null = this.pieceHead;
+    let previous: Piece | null = null;
     let currentLine = 0;
     let currentCharacter = 0;
 
@@ -88,7 +168,7 @@ export class Storage {
         const letter = content[i];
 
         if (currentLine === line && currentCharacter === character) {
-          return { piece: head, offset: i };
+          return { piece: head, offset: i, previous };
         }
 
         if (letter === "\n") {
@@ -101,13 +181,14 @@ export class Storage {
 
       // if nothing found, let the user type in the end
       if (head.next === null) {
-        return { piece: head, offset: head.length };
+        return { piece: head, offset: head.length, previous };
       }
 
+      previous = head;
       head = head.next;
     }
 
-    return { piece: null, offset: 0 };
+    return { piece: null, offset: 0, previous: null };
   }
 
   // might be a good idea to add caching

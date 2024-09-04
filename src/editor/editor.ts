@@ -71,20 +71,28 @@ export class Editor {
     this.keyboard.on("focus", this.focusHandler.bind(this));
     this.keyboard.on("blur", this.blurHandler.bind(this));
 
-    this.keyboard.on("right", () => {
-      this.cursor.right();
+    this.keyboard.on("right", ({ isControl }) => {
+      this.cursor.right(isControl);
     });
 
-    this.keyboard.on("left", () => {
+    this.keyboard.on("left", ({ isControl }) => {
+      this.cursor.left(isControl);
+    });
+
+    this.keyboard.on("up", ({ isControl }) => {
+      this.cursor.up(isControl);
+    });
+
+    this.keyboard.on("down", ({ isControl }) => {
+      this.cursor.down(isControl);
+    });
+
+    this.keyboard.on("backspace", () => {
+      const position = this.cursor.getPosition();
+
       this.cursor.left();
-    });
-
-    this.keyboard.on("up", () => {
-      this.cursor.up();
-    });
-
-    this.keyboard.on("down", () => {
-      this.cursor.down();
+      this.storage.delete(position);
+      this.print();
     });
 
     this.keyboard.on("change", (key) => {
