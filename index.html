@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <link
       rel="icon"
-      type="image/svg+xml"
-      href="/vite.svg"
+      type="image/png"
+      href="/favicon.png"
     />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
+
     <title>Text Editor | Werfit</title>
 
     <link
@@ -83,7 +84,14 @@
           return;
         }
 
-        await navigator.clipboard.writeText(link);
+        await navigator.clipboard
+          .writeText(link)
+          .then(() => {
+            addToast("Successfully copied to your clipboard");
+          })
+          .catch(() => {
+            addToast(`Copy this link: ${link}`);
+          });
       }
 
       function addToast(content, duration = 10_000) {

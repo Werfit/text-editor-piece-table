@@ -62,12 +62,16 @@ export class Keyboard {
         this.emit("paste", content);
       }
 
-      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+      if (event.metaKey || event.altKey || event.ctrlKey) {
         return;
       }
 
       if (event.key === "Enter") {
         this.emit("change", "\n");
+        return;
+      }
+
+      if (event.key.length !== 1) {
         return;
       }
 
