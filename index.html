@@ -38,7 +38,7 @@
 
         <div class="flex items-center gap-2 mt-5">
           <a
-            href="https://github.com/werfit/text-editor"
+            href="https://github.com/werfit/text-editor-piece-table"
             class="rounded-lg text-accent outline-none px-3 py-2 bg-gray-dark text-lg flex items-center gap-2 hover:bg-gray-dark-hovered transition-colors-shadow shadow-lg shadow-gray-dark/25 hover:shadow-gray-dark/30 duration-300 leading-6"
           >
             <svg
@@ -78,12 +78,24 @@
     <script>
       async function copyToClipboard() {
         const link = window.location.href;
-        if (navigator.clipboard === undefined) {
-          alert(`Copy this link: ${link}`);
+        if (window?.navigator?.clipboard === undefined) {
+          addToast(`Copy this link: ${link}`);
           return;
         }
 
         await navigator.clipboard.writeText(link);
+      }
+
+      function addToast(content, duration = 10_000) {
+        const toast = document.createElement("div");
+        toast.classList.add("toast");
+        toast.innerText = content;
+
+        document.body.append(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, duration);
       }
     </script>
     <script

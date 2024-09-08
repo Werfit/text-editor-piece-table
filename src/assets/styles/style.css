@@ -14,3 +14,27 @@
       #f5f5f5;
   }
 }
+
+@layer components {
+  .toast {
+    @apply bg-white fixed left-1/2 -translate-x-1/2 px-3 py-2 rounded shadow-sm shadow-gray-extra-light top-4;
+    animation-name: toast;
+    animation-duration: 500ms;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+  }
+}
+
+@keyframes toast {
+  0% {
+    top: 0rem;
+  }
+
+  75% {
+    top: 1.2rem;
+  }
+
+  100% {
+    top: 1rem;
+  }
+}

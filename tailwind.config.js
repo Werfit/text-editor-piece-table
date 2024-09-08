@@ -33,6 +33,7 @@ export default {
     boxShadow: {
       lg: "0px 0.5rem 1rem",
       xl: "0px 1rem 32rem",
+      sm: "0px 0.25rem 1rem",
     },
     boxShadowColor: {
       ...colors,
