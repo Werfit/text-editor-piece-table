@@ -1,25 +1,35 @@
 type ChangeEventName = "change";
 type ArrowEventName = "right" | "up" | "left" | "down";
+type PasteEventName = "paste";
+type BackspaceEventName = "backspace";
 type EventName =
   | "focus"
   | "blur"
-  | "backspace"
+  | BackspaceEventName
+  | PasteEventName
   | ArrowEventName
   | ChangeEventName;
 
 type EmitArgument<Event extends EventName> = Event extends ChangeEventName
   ? string
   : Event extends ArrowEventName
-  ? {
-      isControl: boolean;
-      isShift: boolean;
-    }
+  ? ArrowEventPayload
+  : Event extends PasteEventName
+  ? string
+  : Event extends BackspaceEventName
+  ? Pick<ArrowEventPayload, "isControl">
   : void;
+
+export type ArrowEventPayload = { isControl: boolean; isShift: boolean };
 
 type Callback<Event extends EventName> = Event extends ChangeEventName
   ? (key: string) => void
   : Event extends ArrowEventName
-  ? (meta: { isControl: boolean; isShift: boolean }) => void
+  ? (meta: ArrowEventPayload) => void
+  : Event extends PasteEventName
+  ? (value: string) => void
+  : Event extends BackspaceEventName
+  ? (meta: Pick<ArrowEventPayload, "isControl">) => void
   : () => void;
 
 const SpecialKeys: Record<string, EventName> = {
@@ -36,7 +46,7 @@ export class Keyboard {
   private pressedKeys = new Set<string>();
 
   constructor(root: HTMLElement) {
-    const keydownListener = (event: KeyboardEvent) => {
+    const keydownListener = async (event: KeyboardEvent) => {
       this.pressedKeys.add(event.key);
 
       if (event.key in SpecialKeys) {
@@ -47,7 +57,17 @@ export class Keyboard {
         return;
       }
 
+      if (event.key === "v" && event.metaKey) {
+        const content = await navigator.clipboard.readText();
+        this.emit("paste", content);
+      }
+
       if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+        return;
+      }
+
+      if (event.key === "Enter") {
+        this.emit("change", "\n");
         return;
       }
 

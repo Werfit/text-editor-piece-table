@@ -11,7 +11,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>Text Editor</title>
+    <title>Text Editor | Werfit</title>
 
     <link
       rel="preconnect"
@@ -37,7 +37,8 @@
         <p class="text-2xl text-muted">Using <b>Piece Table</b></p>
 
         <div class="flex items-center gap-2 mt-5">
-          <button
+          <a
+            href="https://github.com/werfit/text-editor"
             class="rounded-lg text-accent outline-none px-3 py-2 bg-gray-dark text-lg flex items-center gap-2 hover:bg-gray-dark-hovered transition-colors-shadow shadow-lg shadow-gray-dark/25 hover:shadow-gray-dark/30 duration-300 leading-6"
           >
             <svg
@@ -51,10 +52,11 @@
               ></path>
             </svg>
             View Code
-          </button>
+          </a>
 
           <button
             class="p-2 rounded-lg bg-accent text-gray hover:bg-gray-extra-light hover:text-accent shadow-lg shadow-gray-extra-light/25 hover:shadow-gray-extra-light/30 transition-colors-shadow duration-300"
+            onclick="copyToClipboard()"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -72,6 +74,18 @@
 
       <main></main>
     </div>
+
+    <script>
+      async function copyToClipboard() {
+        const link = window.location.href;
+        if (navigator.clipboard === undefined) {
+          alert(`Copy this link: ${link}`);
+          return;
+        }
+
+        await navigator.clipboard.writeText(link);
+      }
+    </script>
     <script
       type="module"
       src="/src/main.ts"

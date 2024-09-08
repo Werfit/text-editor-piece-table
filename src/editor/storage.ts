@@ -80,6 +80,59 @@ export class Storage {
     }
   }
 
+  deleteRange(start: Position, end: Position) {
+    // should be moved to a single function if performance is needed
+    const { piece: startPiece, offset: startOffset } =
+      this.findPieceByLine(start);
+    const { piece: endPiece, offset: endOffset } = this.findPieceByLine(end);
+
+    if (!startPiece || !endPiece) {
+      return;
+    }
+
+    if (startPiece === endPiece) {
+      if (startOffset === 0) {
+        endPiece.offset += endOffset;
+        endPiece.length -= endOffset;
+        return;
+      }
+
+      if (endOffset === startPiece.length) {
+        startPiece.length = startOffset;
+        return;
+      }
+
+      startPiece.next = new Piece(
+        startPiece.offset + endOffset,
+        startPiece.length - endOffset,
+        startPiece.source,
+        startPiece.next
+      );
+      startPiece.length = startOffset;
+
+      return;
+    }
+
+    startPiece.length = startOffset;
+
+    endPiece.offset += endOffset;
+    endPiece.length -= endOffset;
+
+    let piece = startPiece.next;
+    while (piece !== endPiece && piece !== null) {
+      startPiece.next = piece.next;
+      piece = piece.next;
+    }
+
+    if (startPiece.length === 0) {
+      this.removePiece(startPiece);
+    }
+
+    if (endPiece.length === 0) {
+      this.removePiece(endPiece);
+    }
+  }
+
   delete(at: Position) {
     const { piece, offset, previous } = this.findPieceByLine(at);
 
@@ -91,6 +144,7 @@ export class Storage {
       this.removeLastCharacterOfPiece(previous);
       return;
     } else if (offset === 0) {
+      // cursor is behind the first character in the text
       return;
     }
 

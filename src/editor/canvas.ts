@@ -17,6 +17,8 @@ export class Canvas {
     canvas.width = width * this.ratio;
     canvas.height = height * this.ratio;
 
+    canvas.style.margin = "auto";
+
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
@@ -26,6 +28,7 @@ export class Canvas {
     this.context = context!;
 
     root.appendChild(canvas);
+
     this.clearAll();
   }
 

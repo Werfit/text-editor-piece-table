@@ -1,6 +1,7 @@
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const colors = {
+  white: "#fff",
   gray: {
     "extra-light": "#e0e0e0",
     light: "#4d4d4d",
