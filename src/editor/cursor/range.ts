@@ -47,16 +47,29 @@ export class CursorRange extends GenericCursor {
     this.doSetPosition({ character: 0, line: 0 }, { character: 0, line: 0 });
   }
 
+  setActivePosition(position: Position) {
+    const nextPosition = this.forceEdges(position);
+
+    this.view.updateView(nextPosition);
+    this.doSetPosition(nextPosition, this.endPosition);
+  }
+
   getActivePosition(): Position {
     return this.startPosition;
   }
 
-  setPosition(startPosition: Position) {
+  getInactivePosition(): Position {
+    return this.endPosition;
+  }
+
+  setPosition(startPosition: Position, endPosition?: Position) {
+    const endPosition_ = endPosition ?? startPosition;
     const nextPosition = this.forceEdges(startPosition, {
       lineAdjustable: true,
     });
+
     this.view.updateView(nextPosition);
-    this.doSetPosition(nextPosition, nextPosition);
+    this.doSetPosition(nextPosition, endPosition_);
   }
 
   getPosition(): [Position, Position] {

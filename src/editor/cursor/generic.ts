@@ -10,6 +10,7 @@ export abstract class GenericCursor {
   }
 
   abstract getActivePosition(): Position;
+  abstract getInactivePosition(): Position | null;
   abstract getPosition(): Position[];
   abstract setPosition(...positions: Position[]): void;
 

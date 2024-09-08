@@ -1,9 +1,10 @@
 import { Canvas } from "./canvas";
 import { Cursor } from "./cursor/cursor";
 import { Font } from "./font";
-import { ArrowEventPayload, Keyboard } from "./keyboard";
+import { ArrowEventPayload, Keyboard } from "./events/keyboard";
 import { Storage } from "./storage";
 import { View } from "./view";
+import { Mouse } from "./events/mouse";
 
 type EditorProperties = {
   class?: string;
@@ -20,6 +21,7 @@ export class Editor {
   private keyboard: Keyboard;
   private font: Font;
   private view: View;
+  private mouse: Mouse;
 
   constructor(root: Element, properties: EditorProperties) {
     this.container = this.setupContainer(root, properties);
@@ -51,6 +53,9 @@ export class Editor {
 
     this.keyboard = new Keyboard(this.wrapper);
     this.setupKeyboardEvents();
+
+    this.mouse = new Mouse(this.container);
+    this.setupMouseEvents();
 
     this.print();
   }
@@ -158,6 +163,29 @@ export class Editor {
       this.storage.insert(key, position);
       this.cursor.right(this.cursor.getActivePosition().character + 1);
       this.print();
+    });
+  }
+
+  private setupMouseEvents() {
+    this.mouse.on("down", (coordinates) => {
+      this.cursor.setMode("single");
+
+      this.cursor.setPosition(this.view.coordinatesToPosition(coordinates));
+    });
+
+    this.mouse.on("move", (coordinates) => {
+      this.cursor.setMode("range");
+
+      const offset = { ...this.view.offset };
+
+      this.cursor.setPosition(
+        this.view.coordinatesToPosition(coordinates),
+        this.cursor.getInactivePosition()!
+      );
+
+      if (offset.x !== this.view.offset.x || offset.y !== this.view.offset.y) {
+        this.print();
+      }
     });
   }
 

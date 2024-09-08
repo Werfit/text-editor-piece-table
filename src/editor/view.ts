@@ -1,6 +1,6 @@
 import { Font } from "./font";
 import { Storage } from "./storage";
-import { Position } from "./types";
+import { Coordinate, Position } from "./types";
 
 type Size = {
   width: number;
@@ -78,5 +78,12 @@ export class View {
 
   isOffsetSame(offset: Offset) {
     return this.offset.x === offset.x && this.offset.y === offset.y;
+  }
+
+  coordinatesToPosition({ x, y }: Coordinate): Position {
+    const line = Math.floor(y / this.font.lineHeight + this.offset.y);
+    const character = Math.floor(x / this.font.characterWidth + this.offset.x);
+
+    return { line, character };
   }
 }

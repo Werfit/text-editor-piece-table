@@ -76,6 +76,10 @@ export class CursorSingle extends GenericCursor {
     return this.position;
   }
 
+  getInactivePosition() {
+    return null;
+  }
+
   right(to: number) {
     this.rawMove(
       {

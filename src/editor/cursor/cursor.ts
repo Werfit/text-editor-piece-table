@@ -27,6 +27,7 @@ export class Cursor {
 
   turnVisible() {
     if (this.cursor instanceof CursorRange) {
+      this.cursor.destroy();
       return;
     }
 
@@ -36,10 +37,10 @@ export class Cursor {
 
   turnInvisible() {
     if (this.cursor instanceof CursorRange) {
+      this.cursor.destroy();
       return;
     }
 
-    this.input.focus();
     this.cursor.turnInvisible();
   }
 
@@ -51,12 +52,16 @@ export class Cursor {
     return this.cursor.getActivePosition();
   }
 
+  getInactivePosition(): Position | null {
+    return this.cursor.getInactivePosition();
+  }
+
   getMode() {
     return this.mode;
   }
 
-  setPosition(position: Position) {
-    this.cursor.setPosition(position);
+  setPosition(...positions: Position[]) {
+    this.cursor.setPosition(positions[0], positions[1]);
   }
 
   setMode(mode: "single" | "range") {
