@@ -37,6 +37,12 @@ export class Canvas {
   }
 
   printLine(line: string, x: number, y: number) {
+    this.context.fillStyle = "black";
+    this.context.fillText(line, x, y);
+  }
+
+  printPlaceholder(line: string, x: number, y: number) {
+    this.context.fillStyle = "rgba(0, 0, 0, 0.3)";
     this.context.fillText(line, x, y);
   }
 
@@ -44,6 +50,6 @@ export class Canvas {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.fillStyle = "white";
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillStyle = "black";
+    // this.context.fillStyle = "black";
   }
 }

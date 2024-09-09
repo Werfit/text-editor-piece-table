@@ -71,6 +71,11 @@ export class Editor {
       const { x, y } = this.calculateTextCoordinates(0, index);
       this.canvas.printLine(line, x, y);
     }
+
+    if (lines.length === 0) {
+      const { x, y } = this.calculateTextCoordinates(0, 0);
+      this.canvas.printPlaceholder("Enter your thoughts here...", x, y);
+    }
   }
 
   private setupKeyboardEvents() {

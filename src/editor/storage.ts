@@ -37,7 +37,7 @@ export class Storage {
 
   getLineLength(line: number) {
     const lines = this.readLines(line);
-    return lines[lines.length - 1].length;
+    return lines[lines.length - 1]?.length ?? 0;
   }
 
   getLinesAmount() {
