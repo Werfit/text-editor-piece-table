@@ -53,6 +53,12 @@ export class Storage {
     const { piece, offset, previous } = this.findPieceByLine(at);
 
     if (!piece) {
+      if (this.pieceHead === null) {
+        this.add += content;
+        this.pieceHead = new Piece(0, content.length, Source.ADD, null);
+        return;
+      }
+
       return;
     }
 
